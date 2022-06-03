@@ -1,25 +1,30 @@
-import React from 'react'
+import axios from 'axios'
+import React, { useState } from 'react'
 import Header from './Header'
 
 const Viewmark = () => {
-    var Mark=[
-        {
-            "name":"kavya",
-            "admissionno":"54678",
-            "cgpa":"7.8"
-        },
-        {
-            "name":"Arya",
-            "admissionno":"34678",
-            "cgpa":"8.8"
-        },
-        {
-            "name":"Gayaythry",
-            "admissionno":"234678",
-            "cgpa":"9.8"
-        },
-    ]
-
+    var [mark,setViewmark]=useState([])
+    axios.get("http://43.204.187.192:4011/api/viewall").then((response)=>{
+      console.log(response.data)
+      setViewmark(response.data)
+    })
+    const deleteapicall=(id)=>{
+      const data={"_id":id}
+      console.log(data)
+      //reading delete
+      axios.post("http://43.204.187.192:4011/api/delete",data).then(
+          (response)=>{
+              if(response.data.status=="success")
+              {
+alert("Successfully deleted")
+              }
+              else
+              {
+alert("Error in deletion")
+              }
+          }
+      )
+  }
   return (
     <div>
         <Header/>
@@ -41,12 +46,13 @@ const Viewmark = () => {
 
   </thead>
   <tbody>
-    {Mark.map((value,key)=>{
+    {mark.map((value,key)=>{
       return <tr>
      <th scope="Row">1</th>  
      <td>{value.name}</td>
      <td>{value.admissionno}</td>
      <td>{value.cgpa}</td>
+     <td>   <button onClick={()=>{deleteapicall(value._id)}}  className="btn btn-success">Delete</button></td>
      
       </tr>
     })}
